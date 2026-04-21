@@ -1,0 +1,350 @@
+.deckContainer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--color-bg-primary);
+}
+
+.slideWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+/* Top Bar */
+.topBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-8);
+  background: linear-gradient(180deg, rgba(10, 10, 15, 0.9) 0%, transparent 100%);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logoText {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--color-accent-gold);
+}
+
+.logoSub {
+  font-size: 0.625rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.topCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.slideIndicator {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+}
+
+.topActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.iconBtn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-text-secondary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(10px);
+}
+
+.iconBtn:hover {
+  border-color: var(--color-accent-gold);
+  color: var(--color-accent-gold);
+  background: rgba(201, 169, 98, 0.1);
+}
+
+/* Progress Bar */
+.progressContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 100;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-gold), var(--color-accent-gold-light));
+  transform-origin: left;
+}
+
+/* Section Navigation */
+.sectionNav {
+  position: fixed;
+  right: var(--space-6);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  z-index: 100;
+}
+
+.sectionDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionDot:hover {
+  border-color: var(--color-accent-gold);
+  background: rgba(201, 169, 98, 0.2);
+}
+
+.sectionDot.active {
+  border-color: var(--color-accent-gold);
+  background: var(--color-accent-gold);
+}
+
+.sectionDot.active .sectionDotInner {
+  width: 6px;
+  height: 6px;
+  background: var(--color-bg-primary);
+  border-radius: 50%;
+}
+
+.sectionDotInner {
+  width: 0;
+  height: 0;
+}
+
+/* Arrow Navigation */
+.navArrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-text-secondary);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  z-index: 100;
+  opacity: 0.5;
+  backdrop-filter: blur(10px);
+}
+
+.navArrow:hover:not(:disabled) {
+  opacity: 1;
+  border-color: var(--color-accent-gold);
+  color: var(--color-accent-gold);
+  background: rgba(201, 169, 98, 0.15);
+}
+
+.navArrow:disabled {
+  opacity: 0.15;
+  cursor: not-allowed;
+}
+
+.prevArrow {
+  left: var(--space-6);
+}
+
+.nextArrow {
+  right: var(--space-6);
+}
+
+/* Section Label */
+.sectionLabel {
+  position: fixed;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  z-index: 100;
+}
+
+.sectionName {
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.sectionCount {
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  color: var(--color-text-muted);
+}
+
+/* Full Screen Menu */
+.fullMenu {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeMenu {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-8);
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeMenu:hover {
+  border-color: var(--color-accent-gold);
+  color: var(--color-accent-gold);
+}
+
+.menuNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  text-align: center;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  padding: var(--space-2) var(--space-4);
+}
+
+.menuItem:hover,
+.menuItem.active {
+  color: var(--color-accent-gold);
+}
+
+.menuIcon {
+  font-size: 1.25rem;
+  opacity: 0.5;
+}
+
+.menuLabel {
+  letter-spacing: 0.1em;
+}
+
+@media (max-width: 768px) {
+  .sectionNav {
+    display: none;
+  }
+
+  .navArrow {
+    width: 44px;
+    height: 44px;
+  }
+
+  .prevArrow {
+    left: var(--space-2);
+  }
+
+  .nextArrow {
+    right: var(--space-2);
+  }
+
+  .topBar {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .menuItem {
+    font-size: 1.5rem;
+  }
+}
+
+/* Responsive - Small laptops (1280px) */
+@media (max-width: 1280px) {
+  .navArrow {
+    width: 46px;
+    height: 46px;
+  }
+
+  .prevArrow {
+    left: var(--space-4);
+  }
+
+  .nextArrow {
+    right: var(--space-4);
+  }
+
+  .sectionNav {
+    right: var(--space-4);
+  }
+
+  .sectionDot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Responsive - Small laptops (1366px) */
+@media (max-width: 1366px) {
+  .sectionNav {
+    gap: var(--space-3);
+  }
+
+  .sectionDot {
+    width: 11px;
+    height: 11px;
+  }
+}
