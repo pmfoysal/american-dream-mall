@@ -4,7 +4,7 @@ An interactive, immersive sales deck for American Dream — the world's premier 
 
 ## Live URL
 
-[Deploy your project and add the live URL here]
+https://pmfoysal-american-dream-mall.netlify.app
 
 ## Features
 
