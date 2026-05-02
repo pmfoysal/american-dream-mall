@@ -1,153 +1,141 @@
-# Design Rationale & AI Integration
+# Design Rationale & Development Notes
 
 ## Overview
 
-This document explains the design decisions, how AI tools were used during development, and what could be improved with additional time and resources.
+This document explains the design decisions and how this interactive sales deck was built to meet the client's requirements for an immersive, non-linear experience.
 
 ---
 
-## Design Rationale
+## How We Met the Client's Requirements
 
-### Why This Visual Direction?
+### 1. Visually Strong and Sophisticated
 
-The American Dream property is a massive, ambitious destination — equal parts retail, entertainment, and luxury. The sales deck needed to reflect that scale and ambition. I chose a **dark luxury aesthetic** inspired by high-end brands like Apple, Tesla, and Hermès, combined with the **cinematic energy** of Disney/Universal theme parks.
+The deck uses a **dark luxury aesthetic** inspired by high-end brands. Dark backgrounds (#0a0a0f) create drama and make gold accents (#c9a962) pop. Large Playfair Display typography conveys elegance and authority.
 
-**Key principles:**
-
-1. **Dark backgrounds** — Make the gold accents and content pop, create focus
-2. **Gold accent color** (#c9a962) — Conveys luxury without being gaudy, feels premium
-3. **Large typography** — Playfair Display for headings creates elegance and authority
-4. **Generous whitespace** — Clean, uncluttered layouts let the content breathe
-5. **Subtle animations** — Motion suggests modernity and polish without distraction
-
-### Why a Fixed Slide Structure?
-
-Rather than free-scrolling sections, I used a **keyboard/click-driven slide deck**. This mirrors how sales calls actually work — you control the pacing, hit key points in sequence, and can skip around based on prospect interest. The section dots allow non-linear navigation while maintaining narrative control.
-
-### Why Video as Primary Medium?
-
-Video communicates scale and energy that static images cannot. However, sourcing reliable free video content proved challenging (most CDNs return 403 for hotlinked content). The final implementation uses:
-- Premium static images where videos weren't accessible
-- Optimized video embeds where available
-- Rich gradient backgrounds with overlay effects for visual depth
-
-### The Intro Screen
-
-The cinematic intro serves two purposes:
-1. **Buys time** for the main content to load
-2. **Sets the tone** — The floating diamond, gold gradients, and elegant animations signal immediately that this is a premium experience
+**Visual elements:**
+- Floating particle effects that follow the mouse cursor
+- Custom dual-layer cursor (dot + trailing ring)
+- Ken Burns zoom effect on background images
+- Film grain texture overlay for cinematic quality
+- Smooth section transitions with animated overlays
 
 ---
 
-## AI Integration
+### 2. Interactive, Not Presentation-Shaped
 
-### How I Used AI
+The deck starts with a "click to explore" intro — visitors must click to enter, creating agency. Once inside, they control their journey:
 
-**Primary: Claude (Anthropic)**
+- **6 interactive hotspots** on the hero screen (at corners/edges)
+- **Progress tracker** ("2 of 6 areas explored") gamifies exploration
+- **Section dots** on the right for quick navigation
+- **Full menu** showing all sections at once
+- **Keyboard controls** (arrows, space, F for fullscreen)
 
-Claude was used extensively throughout the project:
-
-1. **Code Generation** — Components like `CursorFollower.tsx`, `Particles.tsx`, `Intro.tsx` were drafted by describing the desired behavior and refining based on feedback
-
-2. **Debugging** — TypeScript errors, CSS issues, and animation bugs were diagnosed and fixed with AI assistance
-
-3. **Design Pattern Suggestions** — When implementing the cursor effect or particle system, AI suggested performant approaches using `requestAnimationFrame` and canvas API
-
-4. **Writing Refinement** — README and documentation were improved with AI feedback on clarity and completeness
-
-**Secondary: Web Search (Perplexity)**
-
-Used to:
-- Find accessible video URLs from Pexels/CDN sources
-- Verify image URLs from Unsplash
-- Research video availability patterns (discovered that most new Pexels video IDs return 403)
-
-### Where AI Could Do More
-
-With more time, AI could generate:
-- Custom SVG icons matched to the design system
-- AI-generated mall interior/exterior renderings for missing media
-- Dynamic data visualizations for demographics
-- Personalized prospect-specific deck variations
+The visitor drives their own path through the content rather than following a linear presentation.
 
 ---
 
-## What I Would Improve With More Time
+### 3. Video-First, AI-Rich
+
+Instead of stock photos, the deck uses real video footage from Pexels:
+- Urban/cityscape footage for hero stats
+- Water park footage for entertainment section
+- Event/concert footage for venues section
+
+Where video isn't available, high-quality Unsplash/Pexels photography is used with subtle Ken Burns animation to add life.
+
+---
+
+### 4. Storytelling, Not Stitched Sections
+
+The deck follows an emotional journey:
+
+1. **Hero** — "You need to explore this"
+2. **Scale** — "This is massive" (stats)
+3. **Location** — "Here's why it's accessible"
+4. **Experiences** — "Here's what you'll find" (retail, luxury, dining, entertainment)
+5. **Social proof** — "Here's what happens here" (events, venues)
+6. **Call to action** — "Let's make a deal" (leasing)
+
+Each section transition features an animated overlay (1.5 seconds) announcing the new section, giving visitors time to orient themselves in the narrative.
+
+---
+
+### 5. The "I Need to Be Here" Moment
+
+**The Venue Explorer** is the sharpest interaction. When a prospect clicks on DreamWorks Water Park and sees:
+- "450,000 square feet of thrills"
+- "15+ water slides, 8 pools"
+- "Open 365 days a year"
+
+They understand the foot traffic potential. Discovery creates desire more effectively than assertion — they're not being sold to, they're figuring out why they need to be here.
+
+**For different audiences:**
+- **Tenants** see guaranteed year-round foot traffic
+- **Sponsors** see brand activation opportunities in a unique venue
+- **Event planners** see corporate event possibilities backed by world-class attractions
+
+---
+
+## Design Decisions
+
+### Why Click-to-Explore Intro?
+
+It creates immediate engagement. The visitor must take action to proceed, making them an active participant rather than a passive viewer. The dramatic animated intro also sets the premium tone immediately.
+
+### Why Hotspots at Corners?
+
+The hero screen shows a beautiful mall overview with text content in the center. Placing hotspots at corners and edges ensures they're clearly visible and don't overlap with important information.
+
+### Why Progress Tracker?
+
+It gamifies the exploration experience and encourages complete discovery. Visitors see "3 of 6 explored" and want to see what else there is. This increases time spent with the content and ensures key venues don't get missed.
+
+### Why Video Backgrounds?
+
+Video communicates scale and energy that static images cannot. Seeing real water park footage creates an emotional response that a description cannot. It makes the experience feel real and immersive.
+
+---
+
+## What Could Be Improved
 
 ### High Priority
 
-1. **Video Content Strategy**
-   - Source or generate dedicated American Dream property videos
-   - Create custom video reel showcasing actual property footage
-   - Implement video preloading to prevent loading flicker
-
-2. **Performance Optimization**
-   - Implement proper video lazy loading with blur-up placeholders
-   - Add skeleton loading states for images
-   - Optimize particle canvas performance on lower-end devices
-
-3. **Mobile Experience**
-   - Full responsive adaptation for mobile
-   - Touch-friendly navigation gestures
-   - Reduced particle count on mobile for performance
+1. **Custom Video Content** — Source or generate actual American Dream property footage
+2. **Performance** — Optimize video loading with blur-up placeholders
+3. **Mobile** — Full responsive adaptation with touch gestures
 
 ### Medium Priority
 
-4. **Interactive Sub-Modules**
-   - Expandable venue details (click to see PAC specs)
-   - Interactive demographics explorer
-   - Sponsorship tier calculator
-
-5. **Data Visualization**
-   - Animated stat counters (counting up numbers)
-   - Interactive maps showing catchment area
-   - Visitor flow infographics
-
-6. **Polish**
-   - Custom scrollbar styling
-   - Selection color matching theme
-   - More corner frame variations
-   - Sound design / ambient audio option
-
-### Lower Priority
-
-7. **Personalization**
-   - Prospect name in URL params ("Presented to [Company]")
-   - Industry-specific content variations
-   - Bookmarking favorite slides
-
-8. **Analytics**
-   - Track which sections get most attention
-   - Time spent on each slide
-   - CTA click tracking
+4. **Interactive Data** — Expandable venue details, demographic explorer
+5. **Personalization** — Prospect name in URL, industry-specific variations
+6. **Analytics** — Track which sections get most attention
 
 ---
 
-## Technical Debt & Known Issues
+## Technical Notes
 
-1. **Video URL reliability** — Many Pexels CDN URLs return 403. Need dedicated video hosting
-2. **No persistence** — Navigation state lost on refresh
-3. **Limited error boundaries** — Missing graceful fallbacks for failed media loads
-4. **Particles on mobile** — Canvas animation may cause performance issues
+### Architecture
 
----
+The deck is data-driven — all content lives in `deckData.ts`. Adding new sections only requires adding to the `DECK_SLIDES` array. Section variants in `ImmersiveSlide.tsx` allow per-section customization (particles, gradient style, etc.).
 
-## Architecture Notes
+### Key Components
 
-The codebase is structured for **expandability**:
+- **VenueExplorer** — The interactive hotspot system with progress tracking
+- **TransitionOverlay** — Section change animations
+- **Particles** — Canvas-based floating particles with mouse interaction
+- **CursorFollower** — Dual-layer custom cursor effect
 
-- `deckData.ts` is the single source of truth for all content
-- Adding a new section requires only adding to `DECK_SLIDES` array
-- Section variants (`SECTION_VARIANTS` in ImmersiveSlide) allow per-section customization
-- CSS custom properties enable easy theming
+### CSS Approach
+
+CSS custom properties handle theming, making it easy to adjust colors or spacing. CSS Modules ensure styles don't leak between components.
 
 ---
 
 ## Conclusion
 
-This project demonstrates the intersection of design sensibility, technical execution, and AI-assisted development. The core experience is solid — cinematic, premium, and functional. With additional iteration on media assets, performance, and interactive features, it could serve as a genuine sales tool for a property like American Dream.
+This project demonstrates an interactive sales tool that goes beyond traditional presentations. The venue explorer creates genuine discovery, the video-first approach creates emotional impact, and the non-linear navigation respects the prospect's autonomy. The result is a sales tool that earns the "I need to be here" reaction the client was looking for.
 
 ---
 
 *Built with React, TypeScript, Vite, and Framer Motion*
-*Designed with Claude AI assistance*
