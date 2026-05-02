@@ -4,11 +4,13 @@ import type { ExtendedSlide } from "../../types";
 import { StatsGrid } from "../common/StatsGrid";
 import { FeaturesGrid } from "../common/FeaturesGrid";
 import { Particles } from "../common/Particles";
+import { VenueExplorer } from "../common/InteractiveHotspot";
 import styles from "./ImmersiveSlide.module.css";
 
 interface ImmersiveSlideProps {
   slide: ExtendedSlide;
   isActive?: boolean;
+  onNavigate?: (section: string) => void;
 }
 
 const SECTION_VARIANTS = {
@@ -23,11 +25,14 @@ const SECTION_VARIANTS = {
   leasing: { showParticles: false, contentAlign: "center", gradientStyle: "inviting" },
 } as const;
 
-export function ImmersiveSlide({ slide, isActive = true }: ImmersiveSlideProps) {
+export function ImmersiveSlide({ slide, isActive = true, onNavigate }: ImmersiveSlideProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [isHeroEntered, setIsHeroEntered] = useState(false);
 
   const sectionVariant = SECTION_VARIANTS[slide.section] || SECTION_VARIANTS.hero;
+  const hasHotspots = !!slide.hotspots && slide.hotspots.length > 0;
+  const isHeroSection = slide.section === 'hero' && slide.id === 'hero-intro';
 
   useEffect(() => {
     if (isActive) {
@@ -36,6 +41,12 @@ export function ImmersiveSlide({ slide, isActive = true }: ImmersiveSlideProps) 
     }
     setIsVisible(false);
   }, [isActive]);
+
+  const handleHeroClick = () => {
+    if (isHeroSection && !isHeroEntered) {
+      setIsHeroEntered(true);
+    }
+  };
 
   const renderMedia = () => {
     if (!slide.media) return null;
@@ -70,6 +81,77 @@ export function ImmersiveSlide({ slide, isActive = true }: ImmersiveSlideProps) 
   const hasFeatures = !!slide.features && slide.features.length > 0;
   const hasHighlights = !!slide.content.highlights && slide.content.highlights.length > 0;
 
+  // Hero intro overlay - the "I need to be here" moment
+  if (isHeroSection && !isHeroEntered) {
+    return (
+      <div ref={containerRef} className={`${styles.slide} ${hasMedia ? styles.hasMedia : ""}`} onClick={handleHeroClick}>
+        {/* Particles Effect */}
+        {sectionVariant.showParticles && <Particles count={40} />}
+
+        {/* Background Media */}
+        {hasMedia && renderMedia()}
+
+        {/* Cinematic Intro Overlay */}
+        <motion.div
+          className={styles.introOverlay}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          {/* Logo Mark */}
+          <motion.div
+            className={styles.logoMark}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.3 }}
+          >
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <path d="M40 8L72 24V56L40 72L8 56V24L40 8Z" stroke="#c9a962" strokeWidth="2" fill="none"/>
+              <path d="M40 20L60 30V50L40 60L20 50V30L40 20Z" fill="rgba(201,169,98,0.15)"/>
+              <circle cx="40" cy="40" r="8" fill="#c9a962"/>
+            </svg>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h1
+            className={styles.heroTitle}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
+            AMERICAN DREAM
+          </motion.h1>
+
+          {/* Tagline */}
+          <motion.p
+            className={styles.heroTagline}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1 }}
+          >
+            The Future of Destination Retail
+          </motion.p>
+
+          {/* Click to Explore CTA */}
+          <motion.div
+            className={styles.exploreCta}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+          >
+            <div className={styles.explorePulse}>
+              <span className={styles.explorePulseInner} />
+            </div>
+            <span className={styles.exploreText}>Click anywhere to explore</span>
+          </motion.div>
+        </motion.div>
+
+        {/* Gradient for text legibility */}
+        <div className={styles.gradientBg} />
+      </div>
+    );
+  }
+
   return (
     <div ref={containerRef} className={`${styles.slide} ${hasMedia ? styles.hasMedia : ""}`}>
       {/* Particles Effect */}
@@ -77,6 +159,11 @@ export function ImmersiveSlide({ slide, isActive = true }: ImmersiveSlideProps) 
 
       {/* Background Media */}
       {hasMedia && renderMedia()}
+
+      {/* Venue Explorer Hotspots */}
+      {hasHotspots && onNavigate && (
+        <VenueExplorer hotspots={slide.hotspots!} onNavigate={onNavigate} />
+      )}
 
       {/* Gradient Background for text-only slides */}
       {!hasMedia && <div className={styles.gradientBg} />}
