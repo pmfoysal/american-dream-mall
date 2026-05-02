@@ -68,4 +68,17 @@ export interface DeckState {
 export interface ExtendedSlide extends Slide {
   stats?: Stat[];
   features?: Feature[];
+  hotspots?: VenueHotspot[];
+}
+
+export interface VenueHotspot {
+  id: string;
+  name: string;
+  x: number; // percentage position on image (0-100)
+  y: number; // percentage position on image (0-100)
+  image: string;
+  description: string;
+  specs: Stat[];
+  ctaLabel: string;
+  sectionLink: SectionId;
 }
