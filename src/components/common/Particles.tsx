@@ -12,6 +12,8 @@ interface Particle {
   hue: number;
   phase: number;
   phaseSpeed: number;
+  baseX: number;
+  baseY: number;
 }
 
 interface ParticlesProps {
@@ -23,6 +25,8 @@ export function Particles({ count = 40, color = '#c9a962' }: ParticlesProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number | null>(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
+  const targetMouseRef = useRef({ x: -1000, y: -1000 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,6 +43,11 @@ export function Particles({ count = 40, color = '#c9a962' }: ParticlesProps) {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    const handleMouseMove = (e: MouseEvent) => {
+      targetMouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
     // Initialize particles with more elegant properties
     particlesRef.current = Array.from({ length: count }, () => ({
       x: Math.random() * canvas.width,
@@ -48,10 +57,18 @@ export function Particles({ count = 40, color = '#c9a962' }: ParticlesProps) {
       speedY: (Math.random() - 0.5) * 0.2,
       opacity: Math.random() * 0.6 + 0.2,
       glowSize: Math.random() * 20 + 10,
-      hue: Math.random() * 20 - 10, // Slight hue variation
+      hue: Math.random() * 20 - 10,
       phase: Math.random() * Math.PI * 2,
       phaseSpeed: Math.random() * 0.02 + 0.005,
+      baseX: 0,
+      baseY: 0,
     }));
+
+    // Store initial positions
+    particlesRef.current.forEach(p => {
+      p.baseX = p.x;
+      p.baseY = p.y;
+    });
 
     const hexToRgb = (hex: string) => {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -118,9 +135,36 @@ export function Particles({ count = 40, color = '#c9a962' }: ParticlesProps) {
     };
 
     const animate = () => {
+      // Smooth mouse following
+      mouseRef.current.x += (targetMouseRef.current.x - mouseRef.current.x) * 0.08;
+      mouseRef.current.y += (targetMouseRef.current.y - mouseRef.current.y) * 0.08;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach(particle => {
+        // Calculate distance from mouse
+        const dx = mouseRef.current.x - particle.x;
+        const dy = mouseRef.current.y - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDistance = 200;
+
+        // Cursor attraction/repulsion
+        let cursorForceX = 0;
+        let cursorForceY = 0;
+        if (distance < maxDistance && distance > 0) {
+          const force = (1 - distance / maxDistance) * 0.02;
+          cursorForceX = (dx / distance) * force;
+          cursorForceY = (dy / distance) * force;
+        }
+
+        // Apply forces
+        particle.speedX += cursorForceX;
+        particle.speedY += cursorForceY;
+
+        // Apply friction to prevent endless acceleration
+        particle.speedX *= 0.98;
+        particle.speedY *= 0.98;
+
         // Update position
         particle.x += particle.speedX;
         particle.y += particle.speedY;
@@ -148,6 +192,7 @@ export function Particles({ count = 40, color = '#c9a962' }: ParticlesProps) {
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('mousemove', handleMouseMove);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
