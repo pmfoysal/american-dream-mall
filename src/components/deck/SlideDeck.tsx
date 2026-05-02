@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DECK_SLIDES, NAVIGATION_ITEMS } from "../../data/deckData";
 import { ImmersiveSlide } from "../slides/ImmersiveSlide";
 import { CursorFollower } from "../common/CursorFollower";
+import { TransitionOverlay } from "../common/TransitionOverlay";
 import styles from "./SlideDeck.module.css";
 
 const SLIDE_ORDER = [
@@ -33,11 +34,31 @@ export function SlideDeck() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [direction, setDirection] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
+  const [lastSection, setLastSection] = useState<string | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const slideCount = SLIDE_ORDER.length;
   const currentSlideId = DECK_SLIDES[currentIndex]?.id;
   const currentSection = DECK_SLIDES[currentIndex]?.section;
+
+  // Detect section changes for transitions
+  useEffect(() => {
+    // Skip first slide
+    if (!hasStarted) {
+      setHasStarted(true);
+      setLastSection(currentSection);
+      return;
+    }
+
+    if (currentSection && currentSection !== lastSection && lastSection !== null) {
+      setShowTransition(true);
+      const timer = setTimeout(() => setShowTransition(false), 1500);
+      return () => clearTimeout(timer);
+    }
+    setLastSection(currentSection);
+  }, [currentSection, lastSection, hasStarted]);
 
   const goToSlide = useCallback(
     (index: number) => {
@@ -143,7 +164,7 @@ export function SlideDeck() {
           exit={{ opacity: 0, x: direction * -50 }}
           transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          <ImmersiveSlide slide={DECK_SLIDES[currentIndex]} />
+          <ImmersiveSlide slide={DECK_SLIDES[currentIndex]} onNavigate={goToSection} />
         </motion.div>
       </AnimatePresence>
 
@@ -221,6 +242,12 @@ export function SlideDeck() {
           {slideIndexInSection} / {totalSlidesInSection}
         </span>
       </div>
+
+      {/* Section Transition Overlay */}
+      <TransitionOverlay
+        isActive={showTransition}
+        sectionName={currentSection}
+      />
 
       {/* Full Screen Menu */}
       <AnimatePresence>
